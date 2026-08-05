@@ -12,7 +12,7 @@ export default function Sidebar() {
   return (
     <aside className="flex h-screen w-[240px] flex-shrink-0 flex-col bg-primary-navy">
       <div className="px-6 py-8">
-        <span className="text-2xl font-bold tracking-wide text-white">ALCHERA</span>
+        <img src="/alchera-logo.png" alt="ALCHERA" className="w-[120px]" />
         <p className="mt-1 text-caption text-white/50">밀폐공간 안전 예측 AI</p>
       </div>
       <nav className="mt-4 flex flex-1 flex-col gap-1 px-3">
