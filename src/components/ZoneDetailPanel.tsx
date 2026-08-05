@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ShieldCheck, Wind, Sparkles } from 'lucide-react'
+import { ShieldCheck, Wind, Sparkles, Fan, PowerOff } from 'lucide-react'
 import type { Zone } from '../types'
 import StatusBadge from './common/StatusBadge'
 
@@ -39,6 +39,50 @@ export default function ZoneDetailPanel({ zone }: ZoneDetailPanelProps) {
           <p className="mt-1 text-base text-text-gray">현재 상태</p>
         </div>
         <StatusBadge status={zone.status} size="lg" />
+      </div>
+
+      <div className="grid grid-cols-3 gap-3">
+        <div className="rounded-lg border border-border-gray bg-bg-panel p-3">
+          <p className="text-caption text-text-light">CO2</p>
+          <p className="text-base font-semibold text-primary-navy">{zone.co2}ppm</p>
+        </div>
+        <div className="rounded-lg border border-border-gray bg-bg-panel p-3">
+          <p className="text-caption text-text-light">CO</p>
+          <p className="text-base font-semibold text-primary-navy">{zone.co}ppm</p>
+        </div>
+        <div className="rounded-lg border border-border-gray bg-bg-panel p-3">
+          <p className="text-caption text-text-light">PM2.5</p>
+          <p className="text-base font-semibold text-primary-navy">{zone.pm25}㎍/㎥</p>
+        </div>
+        <div className="rounded-lg border border-border-gray bg-bg-panel p-3">
+          <p className="text-caption text-text-light">VOC</p>
+          <p className="text-base font-semibold text-primary-navy">{zone.voc.toFixed(2)}ppm</p>
+        </div>
+        <div className="rounded-lg border border-border-gray bg-bg-panel p-3">
+          <p className="text-caption text-text-light">라돈</p>
+          <p className="text-base font-semibold text-primary-navy">{zone.radon}Bq/㎥</p>
+        </div>
+        <div className="rounded-lg border border-border-gray bg-bg-panel p-3">
+          <p className="text-caption text-text-light">온도·습도</p>
+          <p className="text-base font-semibold text-primary-navy">
+            {zone.temp}℃/{zone.humidity}%
+          </p>
+        </div>
+      </div>
+
+      <div
+        className={`flex items-center gap-2 rounded-lg border p-4 ${
+          zone.ventilationOn ? 'border-primary-blue/30 bg-primary-blue/5' : 'border-border-gray bg-bg-panel'
+        }`}
+      >
+        {zone.ventilationOn ? (
+          <Fan size={18} className="text-primary-blue" />
+        ) : (
+          <PowerOff size={18} className="text-text-light" />
+        )}
+        <span className={`text-base font-semibold ${zone.ventilationOn ? 'text-primary-blue' : 'text-text-light'}`}>
+          환기 {zone.ventilationOn ? '가동 중' : '정지'}
+        </span>
       </div>
 
       <div className="rounded-lg border border-border-gray bg-bg-panel p-5">

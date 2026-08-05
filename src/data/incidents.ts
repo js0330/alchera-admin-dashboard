@@ -13,7 +13,7 @@ export const incidents: Incident[] = [
     resolvedAt: '14:56:32',
     values: { co: 18, pm25: 42, vehicles: 12 },
     decision: '복합 오염 상승 추세 · CAUTION 분류',
-    action: '환기 강도 60% · 18분 · 관리자 알림 발송',
+    action: '관리자 알림 발송 · 환기 강도 60% 권고 · 현장 조치 18분 만에 완료',
     result: '14:56:32 정상 복귀',
   },
   {
@@ -28,7 +28,7 @@ export const incidents: Incident[] = [
     resolvedAt: '11:41:18',
     values: { co: 34, pm25: 68, vehicles: 21 },
     decision: 'CO 농도 급상승 · DANGER 분류',
-    action: '환기 강도 90% · 34분 · 현장 관리자 긴급 호출',
+    action: '현장 관리자 긴급 호출 · 환기 강도 90% 권고 · 현장 조치 34분 만에 완료',
     result: '11:41:18 정상 복귀',
   },
   {
@@ -43,7 +43,7 @@ export const incidents: Incident[] = [
     resolvedAt: '09:42:03',
     values: { co: 12, pm25: 38, vehicles: 9 },
     decision: 'PM2.5 상승 추세 · CAUTION 분류',
-    action: '환기 강도 40% · 12분 · 관리자 알림 발송',
+    action: '관리자 알림 발송 · 환기 강도 40% 권고 · 현장 조치 12분 만에 완료',
     result: '09:42:03 정상 복귀',
   },
   {
@@ -58,7 +58,7 @@ export const incidents: Incident[] = [
     resolvedAt: '08:12:55',
     values: { co: 16, pm25: 45, vehicles: 15 },
     decision: '출퇴근 시간대 복합 오염 상승 · CAUTION 분류',
-    action: '환기 강도 60% · 22분 · 관리자 알림 발송',
+    action: '관리자 알림 발송 · 환기 강도 60% 권고 · 현장 조치 22분 만에 완료',
     result: '08:12:55 정상 복귀',
   },
   {
@@ -73,7 +73,7 @@ export const incidents: Incident[] = [
     resolvedAt: '23:05:44',
     values: { co: 29, pm25: 71, vehicles: 18 },
     decision: '심야 환기 저하 구간 오염 급증 · DANGER 분류',
-    action: '환기 강도 90% · 33분 · 현장 관리자 긴급 호출',
+    action: '현장 관리자 긴급 호출 · 환기 강도 90% 권고 · 현장 조치 33분 만에 완료',
     result: '23:05:44 정상 복귀',
   },
 ]

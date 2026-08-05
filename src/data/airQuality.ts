@@ -1,4 +1,4 @@
-import type { AirQualityTrendPoint, VentilationSchedulePoint } from '../types'
+import type { AirQualityTrendPoint, GasTrendPoint, VentilationSchedulePoint } from '../types'
 
 export const airQualityTrend: AirQualityTrendPoint[] = [
   { time: '12:00', co2: 560, pm25: 14, voc: 22 },
@@ -15,6 +15,27 @@ export const airQualityTrend: AirQualityTrendPoint[] = [
   { time: '10:00', co2: 720, pm25: 20, voc: 31 },
   { time: '12:00+1', co2: 742, pm25: 18, voc: 32 },
 ]
+
+// 라돈은 환기가 줄어드는 심야~새벽 시간대에 누적되는 경향을 반영했습니다 (CO2·PM2.5와는 다른 위상).
+export const gasTrend: GasTrendPoint[] = [
+  { time: '12:00', co: 12, radon: 60 },
+  { time: '14:00', co: 13, radon: 55 },
+  { time: '16:00', co: 16, radon: 50 },
+  { time: '18:00', co: 17, radon: 55 },
+  { time: '20:00', co: 15, radon: 65 },
+  { time: '22:00', co: 13, radon: 80 },
+  { time: '00:00', co: 11, radon: 100 },
+  { time: '02:00', co: 9, radon: 125 },
+  { time: '04:00', co: 8, radon: 145 },
+  { time: '06:00', co: 9, radon: 130 },
+  { time: '08:00', co: 14, radon: 90 },
+  { time: '10:00', co: 16, radon: 70 },
+  { time: '12:00+1', co: 17, radon: 60 },
+]
+
+export const CO_THRESHOLD = 25
+// 라돈 권고기준: 148 Bq/㎥ (실내공기질 관리법 권고기준)
+export const RADON_THRESHOLD = 148
 
 export const ventilationSchedule: VentilationSchedulePoint[] = [
   { time: '-6h', observed: 520, predicted: null },

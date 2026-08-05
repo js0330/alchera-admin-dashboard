@@ -6,6 +6,7 @@ import DataTable, { type DataTableColumn } from '../components/common/DataTable'
 import Sheet from '../components/common/Sheet'
 import ZoneDetailPanel from '../components/ZoneDetailPanel'
 import AirQualityTrendChart from '../components/charts/AirQualityTrendChart'
+import GasTrendChart from '../components/charts/GasTrendChart'
 import VentilationScheduleChart from '../components/charts/VentilationScheduleChart'
 import { zones } from '../data/zones'
 import type { Zone, ZoneStatus } from '../types'
@@ -28,6 +29,15 @@ const columns: DataTableColumn<Zone>[] = [
   { key: 'voc', header: 'VOC', render: (row) => `${row.voc.toFixed(2)} ppm` },
   { key: 'temp', header: '온도', render: (row) => `${row.temp}℃` },
   { key: 'humidity', header: '습도', render: (row) => `${row.humidity}%` },
+  {
+    key: 'ventilationOn',
+    header: '환기',
+    render: (row) => (
+      <span className={row.ventilationOn ? 'font-medium text-primary-blue' : 'text-text-light'}>
+        {row.ventilationOn ? '가동 중' : '정지'}
+      </span>
+    ),
+  },
 ]
 
 export default function Overview() {
@@ -36,8 +46,10 @@ export default function Overview() {
   const airQualityCards = useMemo(
     () => [
       { label: 'CO2', value: '742', unit: 'ppm', status: 'caution' as ZoneStatus },
+      { label: 'CO', value: '14', unit: 'ppm', status: 'caution' as ZoneStatus },
       { label: 'PM2.5', value: '18', unit: '㎍/㎥', status: 'normal' as ZoneStatus },
       { label: 'VOC', value: '0.32', unit: 'ppm', status: 'normal' as ZoneStatus },
+      { label: '라돈', value: '120', unit: 'Bq/㎥', status: 'caution' as ZoneStatus },
       { label: '온도·습도', value: '24℃/48%', unit: '', status: 'normal' as ZoneStatus },
     ],
     [],
@@ -70,7 +82,7 @@ export default function Overview() {
         />
       </div>
 
-      <div className="mt-6 flex gap-5">
+      <div className="mt-6 grid grid-cols-3 gap-5">
         {airQualityCards.map((card) => (
           <KpiCard
             key={card.label}
@@ -90,6 +102,10 @@ export default function Overview() {
           <VentilationScheduleChart />
         </Card>
       </div>
+
+      <Card title="CO·라돈 추이" className="mt-6">
+        <GasTrendChart />
+      </Card>
 
       <Card title="구역별 공기질 현황" className="mt-6">
         <DataTable columns={columns} rows={zones} getRowKey={(row) => row.id} onRowClick={setSelectedZone} />

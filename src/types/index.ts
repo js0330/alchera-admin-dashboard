@@ -2,16 +2,22 @@ export type ZoneStatus = 'normal' | 'caution' | 'danger'
 
 export type ZoneCategory = 'parking' | 'mechanical' | 'entrance' | 'office' | 'storage'
 
+export type Floor = '옥상' | '4F' | '3F' | '2F' | '1F' | 'B1' | 'B2'
+
 export interface Zone {
   id: string
   name: string
   category: ZoneCategory
+  floor: Floor
   status: ZoneStatus
   co2: number
+  co: number
   pm25: number
   voc: number
+  radon: number
   temp: number
   humidity: number
+  ventilationOn: boolean
   lastUpdated: string
   aiAnalysis: string
   ventRecommendation: string
@@ -23,6 +29,12 @@ export interface AirQualityTrendPoint {
   co2: number
   pm25: number
   voc: number
+}
+
+export interface GasTrendPoint {
+  time: string
+  co: number
+  radon: number
 }
 
 export interface VentilationSchedulePoint {

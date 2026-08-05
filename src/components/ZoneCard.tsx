@@ -1,3 +1,4 @@
+import { Fan } from 'lucide-react'
 import type { Zone } from '../types'
 import StatusBadge from './common/StatusBadge'
 
@@ -29,7 +30,15 @@ export default function ZoneCard({ zone, onClick }: ZoneCardProps) {
       </div>
 
       <div className="flex flex-1 flex-col gap-3 p-5">
-        <h3 className="text-card-title text-primary-navy">{zone.name}</h3>
+        <div className="flex items-center justify-between gap-2">
+          <h3 className="text-card-title text-primary-navy">{zone.name}</h3>
+          {zone.ventilationOn && (
+            <span className="flex flex-shrink-0 items-center gap-1 text-caption font-medium text-primary-blue">
+              <Fan size={14} />
+              환기 중
+            </span>
+          )}
+        </div>
         <div className="flex flex-wrap gap-x-4 gap-y-1 text-base text-text-gray">
           <span>CO2 {zone.co2}ppm</span>
           <span>PM2.5 {zone.pm25}㎍/㎥</span>
