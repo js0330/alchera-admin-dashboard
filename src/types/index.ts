@@ -37,6 +37,13 @@ export interface GasTrendPoint {
   radon: number
 }
 
+export type VentilationState = 'off' | 'on' | 'strong' | 'scheduled'
+
+export interface FloorSchedule {
+  floor: Floor
+  states: VentilationState[]
+}
+
 export interface VentilationSchedulePoint {
   time: string
   observed: number | null

@@ -1,14 +1,20 @@
 import { useMemo, useState } from 'react'
+import { Fan, Radiation, TrendingUp } from 'lucide-react'
 import Card from '../components/common/Card'
-import KpiCard from '../components/common/KpiCard'
 import StatusBadge from '../components/common/StatusBadge'
 import DataTable, { type DataTableColumn } from '../components/common/DataTable'
 import Sheet from '../components/common/Sheet'
 import ZoneDetailPanel from '../components/ZoneDetailPanel'
-import AirQualityTrendChart from '../components/charts/AirQualityTrendChart'
-import GasTrendChart from '../components/charts/GasTrendChart'
+import StatusSummaryCard from '../components/StatusSummaryCard'
+import IsometricFloorMap from '../components/IsometricFloorMap'
+import MiniTrendCard from '../components/charts/MiniTrendCard'
+import InsightList, { type InsightItem } from '../components/InsightList'
+import VentilationHeatmap from '../components/VentilationHeatmap'
+import ReportPreviewList from '../components/ReportPreviewList'
 import VentilationScheduleChart from '../components/charts/VentilationScheduleChart'
 import { zones } from '../data/zones'
+import { airQualityTrend, gasTrend, floorVentilationSchedule, RADON_THRESHOLD } from '../data/airQuality'
+import { incidents } from '../data/incidents'
 import type { Zone, ZoneStatus } from '../types'
 
 const zoneCounts = zones.reduce(
@@ -19,7 +25,7 @@ const zoneCounts = zones.reduce(
   { normal: 0, caution: 0, danger: 0 } as Record<ZoneStatus, number>,
 )
 
-const pct = (count: number) => `${((count / zones.length) * 100).toFixed(1)}%`
+const pctNum = (count: number) => Math.round((count / zones.length) * 100)
 
 const columns: DataTableColumn<Zone>[] = [
   { key: 'name', header: '구역명', render: (row) => <span className="font-medium text-primary-navy">{row.name}</span> },
@@ -43,68 +49,103 @@ const columns: DataTableColumn<Zone>[] = [
 export default function Overview() {
   const [selectedZone, setSelectedZone] = useState<Zone | null>(null)
 
-  const airQualityCards = useMemo(
-    () => [
-      { label: 'CO2', value: '742', unit: 'ppm', status: 'caution' as ZoneStatus },
-      { label: 'CO', value: '14', unit: 'ppm', status: 'caution' as ZoneStatus },
-      { label: 'PM2.5', value: '18', unit: '㎍/㎥', status: 'normal' as ZoneStatus },
-      { label: 'VOC', value: '0.32', unit: 'ppm', status: 'normal' as ZoneStatus },
-      { label: '라돈', value: '120', unit: 'Bq/㎥', status: 'caution' as ZoneStatus },
-      { label: '온도·습도', value: '24℃/48%', unit: '', status: 'normal' as ZoneStatus },
-    ],
+  const miniTrendData = useMemo(
+    () => ({
+      co: gasTrend.map((p) => ({ value: p.co })),
+      radon: gasTrend.map((p) => ({ value: p.radon })),
+      pm25: airQualityTrend.map((p) => ({ value: p.pm25 })),
+      voc: airQualityTrend.map((p) => ({ value: p.voc * 10 })),
+    }),
     [],
   )
+
+  const insights: InsightItem[] = useMemo(() => {
+    const highestCo2Zone = [...zones].sort((a, b) => b.co2 - a.co2)[0]
+    const highestRadonZone = [...zones].sort((a, b) => b.radon - a.radon)[0]
+    const ventilatingCount = zones.filter((z) => z.ventilationOn).length
+
+    return [
+      {
+        icon: TrendingUp,
+        iconClassName: 'bg-status-caution/10 text-status-caution',
+        title: 'CO2 상승',
+        description: `${highestCo2Zone.name} 농도가 평소 대비 상승했습니다.`,
+      },
+      {
+        icon: Radiation,
+        iconClassName: 'bg-status-caution/10 text-status-caution',
+        title: '라돈 상승 감지',
+        description: `${highestRadonZone.name} 라돈 농도가 권고기준(${RADON_THRESHOLD}Bq/㎥)을 초과했습니다.`,
+      },
+      {
+        icon: Fan,
+        iconClassName: 'bg-primary-blue/10 text-primary-blue',
+        title: '환기 필요 구역 감지',
+        description: `현재 ${ventilatingCount}개 구역에서 환기가 가동 중입니다.`,
+      },
+    ]
+  }, [])
+
+  const recentIncidents = incidents.slice(0, 3)
 
   return (
     <div>
       <h1 className="text-page-title text-primary-navy">통합 현황</h1>
       <p className="mt-2 text-base text-text-gray">전체 구역의 공기질 및 안전 상태를 한눈에 확인하세요.</p>
 
-      <div className="mt-8 flex gap-5">
-        <KpiCard label="전체 구역" value={zones.length} sublabel="모니터링 중인 구역" />
-        <KpiCard
-          label="정상"
-          value={zoneCounts.normal}
-          sublabel={pct(zoneCounts.normal)}
-          accentClassName="text-status-normal"
-        />
-        <KpiCard
-          label="주의"
-          value={zoneCounts.caution}
-          sublabel={pct(zoneCounts.caution)}
-          accentClassName="text-status-caution"
-        />
-        <KpiCard
-          label="위험"
-          value={zoneCounts.danger}
-          sublabel={pct(zoneCounts.danger)}
-          accentClassName="text-status-danger"
-        />
+      <div className="mt-8 grid grid-cols-2 gap-5">
+        <div className="flex flex-col gap-5">
+          <div className="flex gap-5">
+            <StatusSummaryCard status="normal" count={zoneCounts.normal} percent={pctNum(zoneCounts.normal)} />
+            <StatusSummaryCard status="caution" count={zoneCounts.caution} percent={pctNum(zoneCounts.caution)} />
+            <StatusSummaryCard status="danger" count={zoneCounts.danger} percent={pctNum(zoneCounts.danger)} />
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <MiniTrendCard label="CO" unit="ppm" value={gasTrend[gasTrend.length - 1].co} data={miniTrendData.co} color="#22C55E" />
+            <MiniTrendCard
+              label="VOC"
+              unit="ppb"
+              value={airQualityTrend[airQualityTrend.length - 1].voc * 10}
+              data={miniTrendData.voc}
+              color="#1D4ED8"
+            />
+            <MiniTrendCard
+              label="라돈"
+              unit="Bq/㎥"
+              value={gasTrend[gasTrend.length - 1].radon}
+              data={miniTrendData.radon}
+              color="#F1A11D"
+            />
+            <MiniTrendCard
+              label="PM2.5"
+              unit="㎍/㎥"
+              value={airQualityTrend[airQualityTrend.length - 1].pm25}
+              data={miniTrendData.pm25}
+              color="#8B5CF6"
+            />
+          </div>
+        </div>
+
+        <Card title="구역별 지도뷰">
+          <IsometricFloorMap zones={zones} onSelect={setSelectedZone} />
+        </Card>
       </div>
 
       <div className="mt-6 grid grid-cols-3 gap-5">
-        {airQualityCards.map((card) => (
-          <KpiCard
-            key={card.label}
-            label={card.label}
-            value={card.value}
-            unit={card.unit}
-            badge={<StatusBadge status={card.status} size="sm" />}
-          />
-        ))}
-      </div>
-
-      <div className="mt-6 grid grid-cols-2 gap-5">
-        <Card title="24시간 공기질 추이">
-          <AirQualityTrendChart />
+        <Card title="AI 판단근거 요약">
+          <InsightList items={insights} />
         </Card>
-        <Card title="예측 기반 환기 스케줄">
-          <VentilationScheduleChart />
+        <Card title="예측 환기 스케줄">
+          <VentilationHeatmap schedules={floorVentilationSchedule} />
+        </Card>
+        <Card title="최근 자동조치 리포트">
+          <ReportPreviewList incidents={recentIncidents} />
         </Card>
       </div>
 
-      <Card title="CO·라돈 추이" className="mt-6">
-        <GasTrendChart />
+      <Card title="예측 기반 환기 스케줄 (CO2)" className="mt-6">
+        <VentilationScheduleChart />
       </Card>
 
       <Card title="구역별 공기질 현황" className="mt-6">

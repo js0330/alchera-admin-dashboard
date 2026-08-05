@@ -1,4 +1,4 @@
-import type { AirQualityTrendPoint, GasTrendPoint, VentilationSchedulePoint } from '../types'
+import type { AirQualityTrendPoint, FloorSchedule, GasTrendPoint, VentilationSchedulePoint } from '../types'
 
 export const airQualityTrend: AirQualityTrendPoint[] = [
   { time: '12:00', co2: 560, pm25: 14, voc: 22 },
@@ -51,6 +51,26 @@ export const ventilationSchedule: VentilationSchedulePoint[] = [
   { time: '+4h', observed: null, predicted: 690 },
   { time: '+5h', observed: null, predicted: 610 },
   { time: '+6h', observed: null, predicted: 545 },
+]
+
+// 시간 축은 ventilationSchedule과 동일합니다: -6h ... NOW ... +6h (13칸)
+export const floorVentilationSchedule: FloorSchedule[] = [
+  { floor: '옥상', states: ['off', 'off', 'off', 'off', 'off', 'off', 'off', 'off', 'off', 'off', 'off', 'off', 'off'] },
+  {
+    floor: '4F',
+    states: ['off', 'off', 'off', 'off', 'off', 'off', 'off', 'off', 'off', 'off', 'off', 'scheduled', 'scheduled'],
+  },
+  { floor: '3F', states: ['off', 'off', 'off', 'off', 'off', 'off', 'off', 'off', 'off', 'off', 'off', 'off', 'off'] },
+  { floor: '2F', states: ['off', 'off', 'off', 'on', 'on', 'off', 'off', 'off', 'off', 'off', 'off', 'off', 'off'] },
+  {
+    floor: '1F',
+    states: ['off', 'off', 'on', 'on', 'on', 'strong', 'strong', 'strong', 'on', 'on', 'off', 'off', 'off'],
+  },
+  {
+    floor: 'B1',
+    states: ['off', 'on', 'on', 'on', 'strong', 'strong', 'strong', 'strong', 'strong', 'on', 'on', 'off', 'off'],
+  },
+  { floor: 'B2', states: ['off', 'off', 'on', 'on', 'on', 'on', 'off', 'off', 'off', 'off', 'off', 'off', 'off'] },
 ]
 
 export const CO2_THRESHOLD = 800
