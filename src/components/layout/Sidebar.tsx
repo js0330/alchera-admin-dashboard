@@ -1,11 +1,10 @@
 import { NavLink } from 'react-router-dom'
-import { LayoutGrid, MapPinned, AlertTriangle, FileText } from 'lucide-react'
+import { LayoutGrid, MapPinned, AlertTriangle } from 'lucide-react'
 
 const MENU_ITEMS = [
   { to: '/', label: '통합 현황', icon: LayoutGrid },
   { to: '/zones', label: '구역별 모니터링', icon: MapPinned },
   { to: '/incidents', label: '이상 징후', icon: AlertTriangle },
-  { to: '/reports', label: '운영 리포트', icon: FileText },
 ]
 
 export default function Sidebar() {
